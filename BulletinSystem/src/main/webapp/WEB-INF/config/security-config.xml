@@ -1,0 +1,44 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="ojt.bulletin"/>
+
+    <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/userDetail/*" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/userList" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/postList" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/postDetail" access="hasRole( 'ADMIN')"/>
+      <intercept-url pattern="/createUser" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/updateUser" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/deleteUser" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/createPost" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/updatePost" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/deletePost" access="hasRole('USER')"/>
+        <access-denied-handler error-page="/denied"/>
+        <form-login
+                login-page="/login"
+                login-processing-url="/login"
+                default-target-url="/postList" 
+                authentication-failure-url="/login?error"
+                username-parameter="email"
+                password-parameter="password"/>
+        <logout logout-url="/logout" logout-success-url="/userLogin.jsp" />
+        <csrf/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="myUserDetailsService">
+            <password-encoder ref="bCryptPasswordEncoder"/>
+        </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>
